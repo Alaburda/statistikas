@@ -1,0 +1,30 @@
+- id: last_update
+  translation: Paskutinį kartą atnaujinta
+- id: phone
+  translation: Telefonas
+- id: email
+  translation: El. paštas
+- id: location
+  translation: Vieta
+- id: buy_now
+  translation: Pirkti dabar
+- id: address_title
+  translation: Užsukite
+- id: submit
+  translation: Siųsti žinutę
+- id: all
+  translation: Visi
+- id: posted_by
+  translation: Parašė
+- id: read_more
+  translation: Skaityti daugiau
+- id: latest_posts
+  translation: Naujausi įrašai
+- id: page_prev
+  translation: Praeitas
+- id: page_next
+  translation: Kitas
+- id: tags
+  translation: Žymės
+- id: categories
+  translation: Kategorijos
