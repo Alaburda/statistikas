@@ -36,6 +36,17 @@ link = "plugins/Ionicons/css/ionicons.min.css"
 link = "plugins/magnific-popup/magnific-popup.css"
 [[params.plugins.css]]
 link = "plugins/slick/slick.css"
+[[params.plugins.css]]
+link = "plugins/fa-icons/css/all.min.css"
+[[params.plugins.css]]
+link = "plugins/fa-icons/css/brands.min.css"
+[[params.plugins.css]]
+link = "plugins/fa-icons/css/fontawesome.min.css"
+[[params.plugins.css]]
+link = "plugins/fa-icons/css/regular.min.css"
+[[params.plugins.css]]
+link = "plugins/fa-icons/css/solid.min.css"
+
 
 # JS Plugins
 [[params.plugins.js]]
