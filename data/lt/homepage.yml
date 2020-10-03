@@ -15,7 +15,7 @@ about:
   enable : true
   title : "Apie mus"
   description : "Suprasti duomenis ne visada yra paprasta, o kartais tiesiog nėra laiko."
-  content : "Mes galime paruošti statistines analizes, konsultuoti tyrimo klausimais ar analitikos strategija. Užtikriname, jog rezultatai būtų suprantami ir nesunkiai įtraukiami į jūsų galutinį produktą. Mūsų kaina lanksti ir atitinka jūsų poreikius, o taip pat po analizės atsakome į visus klausimus bei atliekame pataisymus. Mus tenkina tik 100% rezultatas."
+  content : "Mes galime paruošti statistines analizes, konsultuoti tyrimo klausimais ar padėti su SPSS ar R. Užtikriname, jog rezultatai būtų suprantami ir nesunkiai įtraukiami į jūsų galutinį produktą. Mūsų kaina lanksti ir atitinka jūsų poreikius, o taip pat po analizės atsakome į visus klausimus bei atliekame pataisymus. Mus tenkina tik 100% rezultatas."
   image : "images/wrapper-img.png"
 
 
@@ -49,8 +49,8 @@ service:
 cta:
   enable : true
   bg_image : "images/cta-bg-strip.jpg"
-  title : "We design delightful digital experiences."
-  content : "Read more about what we do and our philosophy of design. Judge for yourself The work and results <br> we’ve achieved for other clients, and meet our highly experienced Team who just love to design."
+  title : "Statistika mums patinka - palikite darbą mums!"
+  content : "Statistines analizes jau rengiame daugiau negu ketveri metai – patikėkite, sutaupysite laiko ir galvos skausmo! Rezultatais laisvai galite įsitikinti mūsų tinklaraščio skiltyje."
   button:
     enable : true
     label : "Susisiekite"

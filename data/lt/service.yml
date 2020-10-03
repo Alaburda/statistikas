@@ -1,6 +1,6 @@
 ########################### about service #############################
 about:
-  enable : true
+  enable : false
   title : "Creative UX/UI Design Agency"
   content : "Lorem ipsum dolor sit amet, consectetur adipisicing elit. Voluptate soluta corporis odit, optio
           cum! Accusantium numquam ab, natus excepturi architecto earum ipsa aliquam, illum, omnis rerum, eveniet
@@ -15,7 +15,7 @@ about:
 
 ########################## featured service ############################
 featured_service:
-  enable : true
+  enable : false
   service_item:
     # featured service item loop
     - name : "Interface Design"
@@ -39,50 +39,34 @@ featured_service:
 ############################# Service ###############################
 service:
   enable : true
-  title : "Our Services"
-  description : "Far far away, behind the word mountains, far from the countries Vokalia and Consonantia, <br> there live the
-          blind texts. Separated they live in Bookmarksgrove right at the coast of the Semantics"
+  title : "Mūsų paslaugos"
+  description : "Kiekvieno poreikiai yra skirtingi, todėl siūlome skirtingas paslaugas. Jeigu neradote ko nors, prašome susisiekti, pasistengsime pagelbėti!"
   service_item:
     # service item loop
     - icon : ion-coffee #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: Branding
-      content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut"
+      name: Statistinė analizė
+      content: "Sukursime Word dokumentą su statistine analize, grafikais ir metodų aprašymu. Duomenis galite pateikti jums patogiu formatu."
 
     # service item loop
     - icon : ion-compass #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: Web Design
-      content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut"
+      name: Imties dydis
+      content: "Prieš tyrimą galime nustatyti reikalingų tiriamųjų skaičių pasiekti reikalingą statistinę galią."
 
     # service item loop
     - icon : ion-image #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: App Design
-      content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut"
+      name: Konsultacijos
+      content: "Kai norite atlikti analizę patys, bet neesate įsitikinę dėl reikalingo statistinio testo, modelio ar metodikos."
 
     # service item loop
     - icon : ion-bug #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: Start Up
-      content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut"
-
-    # service item loop
-    - icon : ion-headphone #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: Logo Design
-      content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut"
+      name: Reportingo ruošimas
+      content: "Savo įmonėje norite sekti KPI, veiklos procesus? Galime paruošti verslo analitinius sprendimus, kurie greičiau informuos apie problemas ir leis sekti verslo rezultatus"
 
     # service item loop
     - icon : ion-leaf #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: Development
-      content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut"
+      name: AB testavimas
+      content: "Galime atlikti jūsų AB testo analizę ir įvertinti gautus rezultatus."
 
-    # service item loop
-    - icon : ion-planet #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: Brand Identity
-      content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut"
-
-    # service item loop
-    - icon : ion-earth #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: Brand Identity
-      content: "Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut"
-      
 ############################# call to action #################################
 cta:
   enable : true
