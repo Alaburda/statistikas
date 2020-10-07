@@ -1,6 +1,6 @@
 ---
-bg_image: images/featue-bg.jpg
-description: this is meta description
+bg_image: images/portfolio/work2.jpg
+description: Kas aš esu?
 draft: false
-title: About Our Company
+title: Apie Statistiką
 ---

@@ -1,6 +1,6 @@
 ---
 bg_image: images/featue-bg.jpg
-description: this is meta description
+description: Atsakymą gausite per 24 val.!
 draft: false
-title: Drop Us A Note
+title: Susisiekite
 ---

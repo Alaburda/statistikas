@@ -1,6 +1,6 @@
 ---
-bg_image: images/featue-bg.jpg
-description: this is meta description
+bg_image: images/blog/blog-post-6.jpg
+description: Tinklaraštis apie statistiką
 draft: false
-title: Latest News
+title: Blogas
 ---

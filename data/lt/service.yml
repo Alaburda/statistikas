@@ -50,7 +50,7 @@ service:
     # service item loop
     - icon : fas fa-ruler #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
       name: Imties dydis
-      content: "Prieš tyrimą galime nustatyti reikalingą tiriamųjų skaičių."
+      content: "Prieš tyrimą galime nustatyti mažiausią reikalingą tiriamųjų skaičių, jog hipotezė pasitvirtintų."
 
     # service item loop
     - icon : fas fa-chart-bar #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
@@ -60,16 +60,16 @@ service:
     # service item loop
     - icon : fab fa-r-project #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
       name: Pagalba su R
-      content: "Kai dirbate su R ar reikia konsultacijos su RStudio"
+      content: "Kai norite atlikti analizę su R, norėtumėte mokymų įmonėje, reikia konsultacijos su RStudio ar paketų vystymu."
     
     - icon : fas fa-chart-area #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
       name: Reportingas
-      content: "Savo įmonėje norite sekti KPI, veiklos procesus? Galime paruošti verslo analitinius sprendimus, kurie greičiau informuos apie problemas ir leis sekti verslo rezultatus."
+      content: "Norite sekti KPI, veiklos procesus? Galime paruošti verslo sprendimus, kurie greičiau informuos apie problemas ir leis sekti rezultatus."
     
     # service item loop
     - icon : fas fa-calculator #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
       name: A/B testavimas
-      content: "Galime atlikti jūsų AB testo analizę ir įvertinti gautus rezultatus."
+      content: "Galime atlikti jūsų atlikto A/B testo analizę ir įvertinti gautus rezultatus."
 
 ############################# call to action #################################
 cta:

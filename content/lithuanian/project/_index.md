@@ -1,6 +1,6 @@
 ---
 bg_image: images/featue-bg.jpg
-description: this is meta description
+description: Kaip analitika ir programavimas išsprendė problemas
 draft: false
-title: Our Project
+title: Projektai
 ---

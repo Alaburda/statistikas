@@ -1,6 +1,6 @@
 ---
-bg_image: images/featue-bg.jpg
-description: this is meta description
+bg_image: images/portfolio/work3.jpg
+description: Statistiko paslaugos
 draft: false
-title: Service
+title: Paslaugos
 ---
