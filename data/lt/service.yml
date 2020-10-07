@@ -43,28 +43,32 @@ service:
   description : "Kiekvieno poreikiai yra skirtingi, todėl siūlome skirtingas paslaugas. Jeigu neradote ko nors, prašome susisiekti, pasistengsime pagelbėti!"
   service_item:
     # service item loop
-    - icon : ion-coffee #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
+    - icon : fas fa-file-word #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
       name: Statistinė analizė
       content: "Sukursime Word dokumentą su statistine analize, grafikais ir metodų aprašymu. Duomenis galite pateikti jums patogiu formatu."
 
     # service item loop
-    - icon : ion-compass #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
+    - icon : fas fa-ruler #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
       name: Imties dydis
-      content: "Prieš tyrimą galime nustatyti reikalingų tiriamųjų skaičių pasiekti reikalingą statistinę galią."
+      content: "Prieš tyrimą galime nustatyti reikalingą tiriamųjų skaičių."
 
     # service item loop
-    - icon : ion-image #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: Konsultacijos
+    - icon : fas fa-chart-bar #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
+      name: Multivariacinis modeliavimas
       content: "Kai norite atlikti analizę patys, bet neesate įsitikinę dėl reikalingo statistinio testo, modelio ar metodikos."
 
     # service item loop
-    - icon : ion-bug #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: Reportingo ruošimas
-      content: "Savo įmonėje norite sekti KPI, veiklos procesus? Galime paruošti verslo analitinius sprendimus, kurie greičiau informuos apie problemas ir leis sekti verslo rezultatus"
-
+    - icon : fab fa-r-project #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
+      name: Pagalba su R
+      content: "Kai dirbate su R ar reikia konsultacijos su RStudio"
+    
+    - icon : fas fa-chart-area #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
+      name: Reportingas
+      content: "Savo įmonėje norite sekti KPI, veiklos procesus? Galime paruošti verslo analitinius sprendimus, kurie greičiau informuos apie problemas ir leis sekti verslo rezultatus."
+    
     # service item loop
-    - icon : ion-leaf #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
-      name: AB testavimas
+    - icon : fas fa-calculator #ionicon pack v2 : https://ionicons.com/v2/ #ionicon pack v2 : https://ionicons.com/v2/
+      name: A/B testavimas
       content: "Galime atlikti jūsų AB testo analizę ir įvertinti gautus rezultatus."
 
 ############################# call to action #################################
