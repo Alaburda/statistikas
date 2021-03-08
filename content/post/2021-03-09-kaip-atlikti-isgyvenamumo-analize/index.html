@@ -1,0 +1,668 @@
+---
+title: Kaip atlikti išgyvenamumo analizę?
+author: Paulius Alaburda
+date: '2021-02-07'
+slug: []
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-03-09T00:16:35+02:00'
+featured: no
+projects: []
+image:
+  placement: 3
+  caption: 'Image credit: [**Austin Distel**](https://unsplash.com/photos/goFBjlQiZFU)'
+
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Išgyvenamumo analizė yra labai universalus įrankis. Tokia analizė reikalinga atvejais, kai mūsų tyrimo klausimas prasideda žodžiais “<strong>kada</strong>” arba “<strong>kiek laiko</strong>”. Dažniausiai išgyvenamumo analizė taikoma tiriant onkologinių pacientų išeitis, bet tais pačiais metodais galima įvertinti, kiek laiko dantų implantas išliks nesugedęs, kada reikėtų keisti detalę, kiek įprastai parduotuvėje lankosi vartotojas ar kada darbuotojai keičia darbą. R turi platų bibliotekų arsenalą, kuriuo atlikti tokią analizę yra paprasta.</p>
+<div id="įrankiai" class="section level2">
+<h2>Įrankiai</h2>
+<p>Išgyvenamumo analizei atlikti yra sukurta daug bibliotekų, bet daugiausia dėmesio skirsime šiems paketams:</p>
+<ul>
+<li><code>survival</code> - skirtas atlikti pagrindines išgyvenamumo analizes</li>
+<li><code>survminer</code> - grafikų biblioteka</li>
+</ul>
+<p><code>survival</code> paketas yra kertinis akmuo. Šio paketo <code>Surv()</code> funkcija sukuria objektus, kuriuos galima pateikti Kaplan-Meier modeliui ar Cox regresijai, sukurti prognostinius modelius (<code>ranger</code> paketas) ar parengti grafikus (<code>survminer</code> paketas).</p>
+</div>
+<div id="užkrauname-duomenis" class="section level2">
+<h2>Užkrauname duomenis</h2>
+<p>Pirma turime užsikrauti reikalingas R bibliotekas ir duomenis iš <code>survival</code> bibliotekos. Ji viduje turi <code>veteran</code> duomenų rinkinį, kurį panaudosime analizei.</p>
+<pre class="r"><code>knitr::opts_chunk$set(warning = FALSE)
+
+library(survival)
+library(ggplot2)
+library(survminer)
+library(ranger)
+library(knitr)
+library(SemiCompRisks)
+library(dplyr)
+
+data(veteran)
+
+kable(head(veteran))</code></pre>
+<table>
+<thead>
+<tr class="header">
+<th align="right">trt</th>
+<th align="left">celltype</th>
+<th align="right">time</th>
+<th align="right">status</th>
+<th align="right">karno</th>
+<th align="right">diagtime</th>
+<th align="right">age</th>
+<th align="right">prior</th>
+</tr>
+</thead>
+<tbody>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">squamous</td>
+<td align="right">72</td>
+<td align="right">1</td>
+<td align="right">60</td>
+<td align="right">7</td>
+<td align="right">69</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">squamous</td>
+<td align="right">411</td>
+<td align="right">1</td>
+<td align="right">70</td>
+<td align="right">5</td>
+<td align="right">64</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">squamous</td>
+<td align="right">228</td>
+<td align="right">1</td>
+<td align="right">60</td>
+<td align="right">3</td>
+<td align="right">38</td>
+<td align="right">0</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">squamous</td>
+<td align="right">126</td>
+<td align="right">1</td>
+<td align="right">60</td>
+<td align="right">9</td>
+<td align="right">63</td>
+<td align="right">10</td>
+</tr>
+<tr class="odd">
+<td align="right">1</td>
+<td align="left">squamous</td>
+<td align="right">118</td>
+<td align="right">1</td>
+<td align="right">70</td>
+<td align="right">11</td>
+<td align="right">65</td>
+<td align="right">10</td>
+</tr>
+<tr class="even">
+<td align="right">1</td>
+<td align="left">squamous</td>
+<td align="right">10</td>
+<td align="right">1</td>
+<td align="right">20</td>
+<td align="right">5</td>
+<td align="right">49</td>
+<td align="right">0</td>
+</tr>
+</tbody>
+</table>
+<p>Duomenų rinkinys paremtas studija “Veterans’ Administration Lung Cancer”, duomenų rinkinio stulpelių reikšmės<a href="#fn1" class="footnote-ref" id="fnref1"><sup>1</sup></a>:</p>
+<ul>
+<li>trt: 1 = kontrolinė grupė, 2 = intervencinė grupė</li>
+<li>celltype: 1 = plokščių ląstelių karcinoma, 2 = adenokarcinoma, 3 = stambių ląstelių karcinoma</li>
+<li>time: išgyventų dienų skaičius</li>
+<li>status: paciento statusas (gyvas/miręs)</li>
+<li>karno: Karnofsky prognostinis įvertis (100=gerai)</li>
+<li>diagtime: mėnesių skaičius nuo diagnozės iki randomizacijos</li>
+<li>age: amžius, metais</li>
+<li>prior: ankstesnė terapija skirta, 0 = ne, 10 = taip</li>
+</ul>
+</div>
+<div id="kaplan-meier-analizė" class="section level2">
+<h2>Kaplan-Meier analizė</h2>
+<p>Kiekvieno išgyvenamumo analizės pagrindas yra <code>Surv()</code> objektas, mūsų atveju tai yra paciento statuso ir išgyvento laiko santykis. <code>Surv()</code> objektas priima laiką ir galutinį statusą kaip argumentus, pavyzdžiui: <code>Surv(time, status)</code>. Nuo čia galime atsispirti, nes iš pradžių tiesiog galime įvertinti bendrą išgyvenamumą be jokių nepriklausomų kintamųjų:</p>
+<pre class="r"><code>km_fit_1 &lt;- survfit(Surv(time, status) ~ 1, data = veteran)
+
+km_fit_1_summary &lt;- summary(km_fit_1, times = c(1,30,60,90*(1:10)))
+
+print(km_fit_1_summary)</code></pre>
+<pre><code>## Call: survfit(formula = Surv(time, status) ~ 1, data = veteran)
+## 
+##  time n.risk n.event survival std.err lower 95% CI upper 95% CI
+##     1    137       2    0.985  0.0102      0.96552       1.0000
+##    30     97      39    0.700  0.0392      0.62774       0.7816
+##    60     73      22    0.538  0.0427      0.46070       0.6288
+##    90     62      10    0.464  0.0428      0.38731       0.5560
+##   180     27      30    0.222  0.0369      0.16066       0.3079
+##   270     16       9    0.144  0.0319      0.09338       0.2223
+##   360     10       6    0.090  0.0265      0.05061       0.1602
+##   450      5       5    0.045  0.0194      0.01931       0.1049
+##   540      4       1    0.036  0.0175      0.01389       0.0934
+##   630      2       2    0.018  0.0126      0.00459       0.0707
+##   720      2       0    0.018  0.0126      0.00459       0.0707
+##   810      2       0    0.018  0.0126      0.00459       0.0707
+##   900      2       0    0.018  0.0126      0.00459       0.0707</code></pre>
+<pre class="r"><code>ggsurvplot(km_fit_1, 
+           data = veteran,
+           pval = TRUE,
+           xlab = &quot;Laikas, dienomis&quot;,
+           ylab = &quot;Išgyvenamumo tikimybė&quot;,
+           ggtheme = theme_bw()
+           )</code></pre>
+<p><img src="/post/2021-03-09-kaip-atlikti-isgyvenamumo-analize/index_files/figure-html/unnamed-chunk-1-1.png" width="672" /></p>
+</div>
+<div id="n-metų-išgyvenamumas" class="section level2">
+<h2>N-metų išgyvenamumas</h2>
+<p>Išgyvenamumo analizėse dažnai aktualu išgyvenamumas po tam tikro laikotarpio. Pavyzdžiui, vienerių metų išgyvenamumą galime apskaičiuoti taip:</p>
+<pre class="r"><code>summary(km_fit_1, times = 365.25)</code></pre>
+<pre><code>## Call: survfit(formula = Surv(time, status) ~ 1, data = veteran)
+## 
+##  time n.risk n.event survival std.err lower 95% CI upper 95% CI
+##   365     10     118     0.09  0.0265       0.0506         0.16</code></pre>
+<p>Vienerių metų išgyvenamumas yra devyni procentai. Kartu pateiktas 95% pasikliautinumo intervalas, kuris rodo, jog išgyvenamumas svyruoja nuo 5 iki 16 procentų.</p>
+</div>
+<div id="išgyvento-laiko-mediana" class="section level2">
+<h2>Išgyvento laiko mediana</h2>
+<p>Antras svarbus skaičius analizuojant išgyvenamumą yra vidutinis išggyventas laikas, kuris yra matuojamas mediana. Visi taikomi metodai yra neparametriniai, t.y. jie neturi prielaidos, jog duomenys yra kaip nors pasiskirstę. Juo labiau, mediana yra patogi tuo, jog ji taip pat įvardina, kiek laiko išgyvena 50% pacientų.</p>
+<pre class="r"><code>km_fit_1</code></pre>
+<pre><code>## Call: survfit(formula = Surv(time, status) ~ 1, data = veteran)
+## 
+##       n  events  median 0.95LCL 0.95UCL 
+##     137     128      80      52     105</code></pre>
+<p>Vidutinis išgyvenamumas yra 80 dienų, apatinis ir viršutinis pasikliautinojo intervalo rėžis taip pat pateiktas (nuo 52 ir 105 dienų).</p>
+</div>
+<div id="palyginimas-tarp-grupių" class="section level2">
+<h2>Palyginimas tarp grupių</h2>
+<p>Dažniausiai išgyvenamumo analizė atliekama su tikslu įvertinti, ar kuris nors kintamasis turėjo įtakos galutiniam išgyvenamumui arba išgyvenamumo laikui. Šiame duomenų rinkinyje pagal stulpelį <code>trt</code> pacientus galime išskaidyti į kontrolinę ir intervencinę grupes:</p>
+<pre class="r"><code>km_fit_2 &lt;- survfit(Surv(time, status) ~ trt, data=veteran)
+
+
+ggsurvplot(km_fit_2, 
+           data = veteran,
+           pval = TRUE,
+           xlab = &quot;Laikas, dienomis&quot;,
+           ylab = &quot;Išgyvenamumo tikimybė&quot;,
+           ggtheme = theme_bw()
+           )</code></pre>
+<p><img src="/post/2021-03-09-kaip-atlikti-isgyvenamumo-analize/index_files/figure-html/unnamed-chunk-4-1.png" width="672" /></p>
+<p>Grafiškai panašu, jog gydymas padėjo kai kuriems pacientams ilgiau išgyventi, tačiau matome, jog iš pradžių pacientų išeitys yra geresnės kontrolinėje grupėje. <code>ggsurvplot</code> iškart atlieka log-ranginį testą ir pateikia p reikšmę viduje grafiko, taip matome, jog skirtumas tarp kontrolinės ir intervencinės grupės nebuvo statistiškai reikšmingas.</p>
+<p>Log-ranginį testą taip pat galima atlikti taip (visa formulė liko tokia pati, tiesiog ją perdaviau į kitą funkciją):</p>
+<pre class="r"><code>survdiff(Surv(time, status) ~ trt, data=veteran)</code></pre>
+<pre><code>## Call:
+## survdiff(formula = Surv(time, status) ~ trt, data = veteran)
+## 
+##        N Observed Expected (O-E)^2/E (O-E)^2/V
+## trt=1 69       64     64.5   0.00388   0.00823
+## trt=2 68       64     63.5   0.00394   0.00823
+## 
+##  Chisq= 0  on 1 degrees of freedom, p= 0.9</code></pre>
+<p>Matome tokią pačią p reikšmę ir šiek tiek daugiau informacijos apie testo rezultatus.</p>
+</div>
+<div id="cox-regresijos-modelis" class="section level2">
+<h2>Cox regresijos modelis</h2>
+<p>Vien atsakymo, jog skirtumas yra statistiškai reikšmingas, ne visada užtenka. Kai norime apskaičiuoti skirtumo dydį, galime pritaikyti Cox regresiją.</p>
+<p>Cox regresijos modelis yra pusiau parametrinis modelis, kurį su <code>coxph</code> funkcija galime paleisti taip (broom funkcija taikome, jog iškart turėtume interpretuojamus koeficientus):</p>
+<pre class="r"><code>cox_model_1 &lt;- coxph(Surv(time, status) ~ trt, data=veteran)
+
+cox_model_1 %&gt;% 
+  broom::tidy(exp = TRUE)</code></pre>
+<pre><code>## # A tibble: 1 x 5
+##   term  estimate std.error statistic p.value
+##   &lt;chr&gt;    &lt;dbl&gt;     &lt;dbl&gt;     &lt;dbl&gt;   &lt;dbl&gt;
+## 1 trt       1.02     0.181    0.0982   0.922</code></pre>
+<p>Cox regresija įvertina <strong>Rizikos santykį (HR)</strong>. HR nurodo rizikų santykį tarp dviejų grupių bet kuriame laiko taške. Tai savaime nėra rizika, o įvykio dažnis palyginus su lyginamąja grupe. Šiuo atveju mes vertinome riziką intervencinėje grupėje santykiu su kontroline grupe, todėl bet kuriuo metu pacientai turėjo 1,7% didesnę riziką mirti negu kontrolinėje grupėje. Mes nenusakome konkretaus mirties dažnio, o nusakome, kaip jis keičiasi. Jeigu HR &gt; 1, rizika grupėje didesnė, jeigu &lt; 1, tuomet rizika yra mažesnė.</p>
+<p>Cox regresiją taip pat galima validuoti su <em>Schoenfeld residual</em>, kuris patikrina, ar proporcingų rizikų prielaida buvo išlaikyta<a href="#fn2" class="footnote-ref" id="fnref2"><sup>2</sup></a>. cox.zph() funkcija leidžia įvertinti, ar likutinės regresijos modelio vertės nepriklauso nuo laiko. Statistiškai reikšmingas testas atmestų prielaidų ir negalėtume laikyti, jog testas buvo pritaikytas teisingai.</p>
+<pre class="r"><code>(ph_check &lt;- survival::cox.zph(cox_model_1))</code></pre>
+<pre><code>##        chisq df    p
+## trt     3.54  1 0.06
+## GLOBAL  3.54  1 0.06</code></pre>
+<p>P reikšmė maža, bet proporcingų rizikų prielaida negali būti atmesta. Vizualiai galime įvertinti rezultatus su <code>ggcoxzph()</code> funkcija:</p>
+<pre class="r"><code>survminer::ggcoxzph(ph_check)</code></pre>
+<p><img src="/post/2021-03-09-kaip-atlikti-isgyvenamumo-analize/index_files/figure-html/unnamed-chunk-8-1.png" width="672" /></p>
+<p>Kadangi su mūsų vieno nepriklausomo kintamojo modeliu viskas gerai, galime pateikti kauptinę riziką:</p>
+<pre class="r"><code>ggsurvplot(km_fit_2, 
+           data = veteran,
+           pval = TRUE,
+           xlab = &quot;Laikas, dienomis&quot;,
+           ylab = &quot;Kauptinė rizika&quot;,
+           ggtheme = theme_bw(),
+           fun = &quot;cumhaz&quot;
+           )</code></pre>
+<p><img src="/post/2021-03-09-kaip-atlikti-isgyvenamumo-analize/index_files/figure-html/unnamed-chunk-9-1.png" width="672" /></p>
+</div>
+<div id="landmark-analizė" class="section level2">
+<h2>Landmark analizė</h2>
+<p>Yra atvejų, kai log ranginiai ir Cox regresijos testai nebūtinai gali būti teisingi. Klinikiniuose tyrimuose po gydymo skyrimo tolesni vizitai būna suplanuoti į priekį ir apie paciento statusą sužinome per vizitą, tačiau atlikdami Cox proporcinių rizikų regresiją primetame, jog pacientų statusą žinome nuo t = 0, kai iš tikrųjų apie paciento galutinį statusą iš pradžių nežinome (t.y. visi pacientai iš pradžių yra gyvi!). Panaši problema gali iškilti su klinikiniais tyrimais, kai pacientai yra įtraukimi į gydymo grupę ir jų išgyventas laikas skaičiuojamas dar prieš jiems gaunant gydymą. Tai pagerina intervencinės grupės statistiką ir leidžia klaidingai teigti, jog gydymas buvo sėkmingas<a href="#fn3" class="footnote-ref" id="fnref3"><sup>3</sup></a>.</p>
+<p>Landmark metodas išvengia šališkumo parinkdamas naują atskaitos tašką laike. Taip pat tai reiškia, jog kai kurie pacientai nebus įtraukti į analizę, todėl raportuojant būtina paminėti, kiek pacientų buvo neįtraukta į studiją. Iliustruoti šį pavyzdį naudosime BMT duomenų rinkinį. Tai yra 137 pacientų, kuriems buvo persodinti kaulų čiulpai, duomenų rinkinys. Naudosime šiuos kintamuosius:</p>
+<ul>
+<li><code>T1</code> yra laikas iki mirties arba paskutinio vizito</li>
+<li><code>delta1</code> paciento statusas; 1 - miręs, 1 - gyvas</li>
+<li><code>TA</code> laikas iki ūmios transplantato prieš šeiminką ligos</li>
+<li><code>deltaA</code> žymė, ar išsivystė ūmi transplantato prieš šeiminką liga</li>
+</ul>
+<p>Užsikrauname duomenis:</p>
+<pre class="r"><code>data(BMT, package = &quot;SemiCompRisks&quot;)</code></pre>
+<p>Naudojame naują duomenų rinkinį, nes jame turime aiškų laikotarpį, kiek laiko reikia tikėtis ligos - 90 dienų. Laikotarpis bus kitoks, priklausomai nuo tyrimo konteksto.</p>
+<pre class="r"><code>lm_dat &lt;- 
+  BMT %&gt;% 
+  filter(T1 &gt;= 90) </code></pre>
+<p>Tokiu būdu atmetame 15 pacientų - tai yra pacientai, kurie mirė iki 90 dienų laikotarpio. Jeigu mus domina ryšys tarp atmetimo ir išgyvenamumo, mes turime vertinti išgyvenamumą ne nuo transplanto datos (kada pacientai tikrai negalėjo turėti atmetimo reakcijos), o nuo ligos datos. Dėl to išgyventą laiką skaičiuosime nuo 90 dienų, nes tuo metu mes esame užtikrinti, kurie pacientai serga liga, o kurie - ne:</p>
+<pre class="r"><code>lm_dat &lt;- 
+  lm_dat %&gt;% 
+  mutate(
+    lm_T1 = T1 - 90
+    )
+
+lm_fit &lt;- survfit(Surv(lm_T1, delta1) ~ deltaA, data = lm_dat)</code></pre>
+<p>Cox regresijos funkcija <code>coxph()</code> turi patogų argumentą “subset”, kuris leidžia filtruoti duomenis:</p>
+<pre class="r"><code>coxph(
+  Surv(T1, delta1) ~ deltaA, 
+  subset = T1 &gt;= 90, 
+  data = BMT
+  ) %&gt;% 
+  gtsummary::tbl_regression(exp = TRUE)</code></pre>
+<style>html {
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Helvetica Neue', 'Fira Sans', 'Droid Sans', Arial, sans-serif;
+}
+
+#rwcvzaojer .gt_table {
+  display: table;
+  border-collapse: collapse;
+  margin-left: auto;
+  margin-right: auto;
+  color: #333333;
+  font-size: 16px;
+  font-weight: normal;
+  font-style: normal;
+  background-color: #FFFFFF;
+  width: auto;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #A8A8A8;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #A8A8A8;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+}
+
+#rwcvzaojer .gt_heading {
+  background-color: #FFFFFF;
+  text-align: center;
+  border-bottom-color: #FFFFFF;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rwcvzaojer .gt_title {
+  color: #333333;
+  font-size: 125%;
+  font-weight: initial;
+  padding-top: 4px;
+  padding-bottom: 4px;
+  border-bottom-color: #FFFFFF;
+  border-bottom-width: 0;
+}
+
+#rwcvzaojer .gt_subtitle {
+  color: #333333;
+  font-size: 85%;
+  font-weight: initial;
+  padding-top: 0;
+  padding-bottom: 4px;
+  border-top-color: #FFFFFF;
+  border-top-width: 0;
+}
+
+#rwcvzaojer .gt_bottom_border {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rwcvzaojer .gt_col_headings {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+}
+
+#rwcvzaojer .gt_col_heading {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  padding-left: 5px;
+  padding-right: 5px;
+  overflow-x: hidden;
+}
+
+#rwcvzaojer .gt_column_spanner_outer {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: normal;
+  text-transform: inherit;
+  padding-top: 0;
+  padding-bottom: 0;
+  padding-left: 4px;
+  padding-right: 4px;
+}
+
+#rwcvzaojer .gt_column_spanner_outer:first-child {
+  padding-left: 0;
+}
+
+#rwcvzaojer .gt_column_spanner_outer:last-child {
+  padding-right: 0;
+}
+
+#rwcvzaojer .gt_column_spanner {
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: bottom;
+  padding-top: 5px;
+  padding-bottom: 6px;
+  overflow-x: hidden;
+  display: inline-block;
+  width: 100%;
+}
+
+#rwcvzaojer .gt_group_heading {
+  padding: 8px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#rwcvzaojer .gt_empty_group_heading {
+  padding: 0.5px;
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  vertical-align: middle;
+}
+
+#rwcvzaojer .gt_from_md > :first-child {
+  margin-top: 0;
+}
+
+#rwcvzaojer .gt_from_md > :last-child {
+  margin-bottom: 0;
+}
+
+#rwcvzaojer .gt_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  margin: 10px;
+  border-top-style: solid;
+  border-top-width: 1px;
+  border-top-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 1px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 1px;
+  border-right-color: #D3D3D3;
+  vertical-align: middle;
+  overflow-x: hidden;
+}
+
+#rwcvzaojer .gt_stub {
+  color: #333333;
+  background-color: #FFFFFF;
+  font-size: 100%;
+  font-weight: initial;
+  text-transform: inherit;
+  border-right-style: solid;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+  padding-left: 12px;
+}
+
+#rwcvzaojer .gt_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rwcvzaojer .gt_first_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+}
+
+#rwcvzaojer .gt_grand_summary_row {
+  color: #333333;
+  background-color: #FFFFFF;
+  text-transform: inherit;
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+}
+
+#rwcvzaojer .gt_first_grand_summary_row {
+  padding-top: 8px;
+  padding-bottom: 8px;
+  padding-left: 5px;
+  padding-right: 5px;
+  border-top-style: double;
+  border-top-width: 6px;
+  border-top-color: #D3D3D3;
+}
+
+#rwcvzaojer .gt_striped {
+  background-color: rgba(128, 128, 128, 0.05);
+}
+
+#rwcvzaojer .gt_table_body {
+  border-top-style: solid;
+  border-top-width: 2px;
+  border-top-color: #D3D3D3;
+  border-bottom-style: solid;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+}
+
+#rwcvzaojer .gt_footnotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rwcvzaojer .gt_footnote {
+  margin: 0px;
+  font-size: 90%;
+  padding: 4px;
+}
+
+#rwcvzaojer .gt_sourcenotes {
+  color: #333333;
+  background-color: #FFFFFF;
+  border-bottom-style: none;
+  border-bottom-width: 2px;
+  border-bottom-color: #D3D3D3;
+  border-left-style: none;
+  border-left-width: 2px;
+  border-left-color: #D3D3D3;
+  border-right-style: none;
+  border-right-width: 2px;
+  border-right-color: #D3D3D3;
+}
+
+#rwcvzaojer .gt_sourcenote {
+  font-size: 90%;
+  padding: 4px;
+}
+
+#rwcvzaojer .gt_left {
+  text-align: left;
+}
+
+#rwcvzaojer .gt_center {
+  text-align: center;
+}
+
+#rwcvzaojer .gt_right {
+  text-align: right;
+  font-variant-numeric: tabular-nums;
+}
+
+#rwcvzaojer .gt_font_normal {
+  font-weight: normal;
+}
+
+#rwcvzaojer .gt_font_bold {
+  font-weight: bold;
+}
+
+#rwcvzaojer .gt_font_italic {
+  font-style: italic;
+}
+
+#rwcvzaojer .gt_super {
+  font-size: 65%;
+}
+
+#rwcvzaojer .gt_footnote_marks {
+  font-style: italic;
+  font-size: 65%;
+}
+</style>
+<div id="rwcvzaojer" style="overflow-x:auto;overflow-y:auto;width:auto;height:auto;"><table class="gt_table">
+  
+  <thead class="gt_col_headings">
+    <tr>
+      <th class="gt_col_heading gt_columns_bottom_border gt_left" rowspan="1" colspan="1"><strong>Characteristic</strong></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>HR</strong><sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>95% CI</strong><sup class="gt_footnote_marks">1</sup></th>
+      <th class="gt_col_heading gt_columns_bottom_border gt_center" rowspan="1" colspan="1"><strong>p-value</strong></th>
+    </tr>
+  </thead>
+  <tbody class="gt_table_body">
+    <tr>
+      <td class="gt_row gt_left">deltaA</td>
+      <td class="gt_row gt_center">1.08</td>
+      <td class="gt_row gt_center">0.57, 2.07</td>
+      <td class="gt_row gt_center">0.8</td>
+    </tr>
+  </tbody>
+  
+  <tfoot>
+    <tr class="gt_footnotes">
+      <td colspan="4">
+        <p class="gt_footnote">
+          <sup class="gt_footnote_marks">
+            <em>1</em>
+          </sup>
+           
+          HR = Hazard Ratio, CI = Confidence Interval
+          <br />
+        </p>
+      </td>
+    </tr>
+  </tfoot>
+</table></div>
+</div>
+<div id="daugiau-informacijos" class="section level2">
+<h2>Daugiau informacijos</h2>
+<p>Daugiau apie išgyvenamumo analitiką galima rasti čia:</p>
+<ul>
+<li><a href="https://www.emilyzabor.com/tutorials/survival_analysis_in_r_tutorial.html">Survival Analysis in R</a></li>
+<li><a href="https://oxford.universitypressscholarship.com/view/10.1093/acprof:oso/9780195152968.001.0001/acprof-9780195152968">Applied Longitudinal Data Analysis: Modeling Change and Event Occurence</a> ir <a href="https://bookdown.org/content/4253/describing-discrete-time-event-occurrence-data.html">knyga, kuri pateikia pavyzdinį kodą</a></li>
+<li><a href="https://hranalyticslive.netlify.app/">HR Analytics in R</a></li>
+<li><a href="http://peopleanalytics-regression-book.org/survival.html">Handbook of Regression Modeling in People Analytics</a></li>
+</ul>
+</div>
+<div class="footnotes">
+<hr />
+<ol>
+<li id="fn1"><p><a href="https://stat.ethz.ch/R-manual/R-devel/library/survival/html/veteran.html" class="uri">https://stat.ethz.ch/R-manual/R-devel/library/survival/html/veteran.html</a><a href="#fnref1" class="footnote-back">↩︎</a></p></li>
+<li id="fn2"><p>Ankstesnėje pastraipoje didesnės rizikos procentas tinkamas bet kuriame taške laike, nes tai yra regresijos prielaida.<a href="#fnref2" class="footnote-back">↩︎</a></p></li>
+<li id="fn3"><p>Daugiau apie šią problemą galima rasti šiame <a href="https://www.bmj.com/content/340/bmj.b5087">straipsnyje apie statinus</a>.<a href="#fnref3" class="footnote-back">↩︎</a></p></li>
+</ol>
+</div>
