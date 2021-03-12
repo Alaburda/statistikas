@@ -19,23 +19,26 @@ item:
     content: 'e-knyga apie statistiką su R'
     align: center
     overlay_color: '#666'  # An HTML color value.
-    overlay_img: bubbles.jpg  # Image path relative to your `assets/media/` folder
+    overlay_img: books-2.jpg  # Image path relative to your `assets/media/` folder
     overlay_filter: 0.5  # Darken the image. Value in range 0-1.
     cta_label: Skaityti
     cta_url: 'https://alaburda.github.io/statistika'
     cta_icon_pack: fas
     cta_icon: graduation-cap
   - title: Kaip atlikti išgyvenamumo analizę?
-    content: 'I am left aligned 😄'
-    align: left
+    content: Trumpas gidas atlikti išgyvenamumo analizę.
+    align: center
     overlay_color: '#555'
-    overlay_img: ''
+    overlay_img: tiles-2.jpg
     overlay_filter: 0.5
-  - title: Kaip atlikti meta-analizę?
-    content: ''
-    align: right
+    cta_label: Skaityti
+    cta_url: '/2021/02/07/kaip-atlikti-isgyvenamumo-analize/'
+  - title: Kaip teisingai saugoti duomenis?
+    content: 'Teisingai saugomi duomenis palengvina analizę!'
     overlay_color: '#333'
-    overlay_img: ''
-    overlay_filter: 0.5
+    overlay_img: excel-icons-2.jpg
+    overlay_filter: 0.6
+    cta_label: Skaityti
+    cta_url: 'https://alaburda.github.io/statistika'
 
 ---
