@@ -1,0 +1,59 @@
+---
+title: Kaip teisingai saugoti duomenis?
+author: Paulius Alaburda
+date: '2021-03-12'
+slug: []
+categories: []
+tags: []
+subtitle: ''
+summary: ''
+authors: []
+lastmod: '2021-03-12T11:52:23+02:00'
+featured: no
+image:
+  caption: ''
+  focal_point: ''
+  preview_only: no
+  placement: 3
+projects: []
+---
+
+<script src="/rmarkdown-libs/header-attrs/header-attrs.js"></script>
+
+
+<p>Prieš kiekvieną tyrimą visada iškyla klausimas, kaip teisingai saugoti duomenis. Ar iškart viską vesti į SPSS, į Excel? Kaip suvesti informaciją apie paciento simptomus, jeigu jų pasireiškė daugiau negu vienas? Ar reikia viską koduoti skaičiais, o ne žodžiais? Šis įrašas paaiškina, kaip geriausia saugoti duomenis. Pagrindiniai principai: rašyti datas kaip YYYY-MM-DD, nepalikti tuščių laukų, saugoti vieną dalyką vienoje celėje, išsaugoti duomenis stačiakampėje struktūroje, susikurti duomenų žodyną, nekoduoti duomenų spalva, pasirinkti gerus pavadinimus, saugoti kopijas ir naudoti duomenų validavimą.</p>
+<div id="išlikite-nuoseklūs" class="section level2">
+<h2>1. Išlikite nuoseklūs</h2>
+<p>Pati svarbiausia taisyklė - išlikti nuosekliems. Kad ir kaip renkatės vesti duomenis, svarbiausia yra laikytis tų pačių principų. Jeigu reikės duomenis vėliau tvarkyti, tai bus lengviau padaryti.</p>
+<p>Kategoriniams kintamiesiems pasirinkite vienodus kodus. Jeigu į stulpelį vedate lytį, naudokite “vyras” vyrams ir “moteris” moterims. Arba “M” ir “F”, arba “V” ir “M”. Nerašykite į tą patį stulpelį kartais “M”, o kartais “moteris”. Pasirinkite vieną ir laikykitės pasirinkimo. Be to, kartais žmonės siūlo viską koduoti vienetais, nuliais ir pan., bet tai tikrai nėra būtina.</p>
+<p>Trūkstamoms reikšmėms naudokite nuoseklią koduotę. Kai faile yra trūkstama reikšmė, visada iškyla klausimas, ar tai yra duomenų įvedimo klaida, ar tiesiog nėra duomenų. Vietoje tuščios celės, įprasti variantai yra “NA” arba “-”. Kai kurie žmonės naudoja 999 arba -999, bet atliekant analizes yra didesnė tikimybė neatkreipti į reikšmes dėmesio, todėl jų nerekomenduoju.</p>
+<p>Stulpelių pavadinimai turi būti nuoseklūs. Jeigu turite kelis failus ir viename iš jų stulpelio pavadinimas yra “population_2005”, tada tikėtumėmės, jog tas pats stulpelis kituose failuose turėti irgi tokį pavadinimą. Nenaudokite skirtingų pavadinimų tam pačiam dalykui.</p>
+<p>Datos turi būti standartizuotos. Geriausias formatas vienareikšmiškai yra YYYY-MM-DD (metai-mėnuo-diena). Jeigu pradėjote naudoti kitą datos formatą, laikykitės jo. Pavyzdžiui, viduryje duomenų vedimo nepradėkite naudoti taškelių vietoje brūkšnelių.</p>
+</div>
+<div id="geri-stulpelių-pavadinimai" class="section level2">
+<h2>2. Geri stulpelių pavadinimai</h2>
+<p>Geras stulpelio pavadinimas yra trumpas, bet informatyvus. Tai gali būti sudėtinga pataikyti, todėl verta šiek tiek pagalvoti prieš vedant duomenis. Kelios geros taisyklės: nenaudoti tarpų ir nenaudoti nestandartinių simbolių (lietuviškų raidžių, !, @, #, $, %, ^, &amp;, *, (, ), / ir pan.). Tai yra svarbu analitikui, kuris dirba su duomenimis, nes jis nurodydamas stulpelio pavadinimą jį turės išskirti kabutėmis (priešingu atveju, “populiacija 2015” būtų suprasta kaip du atskiri stulpeliai).</p>
+<p>Aišku, tai nereiškia, jog reikia laikytis griežtų klinikinių tyrimų standartų. Daug gerų ir blogų pavyzdžių galima rasti <a href="https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/">Data Carpentry puslapyje</a>. Pavyzdžiui, respondento ar paciento lyties stulpelio pavadinimas turėtų būti “lytis”“, bet ne”m/f".</p>
+</div>
+<div id="vengti-tuščių-laukelių" class="section level2">
+<h2>3. Vengti tuščių laukelių</h2>
+<p>Tuščias laukelis duomenų rinkinyje gali reikštis bent tris skirtingus dalykus. Tai gali būti duomenų įvedimo klaida, tai gali būti nuoroda, jog nebuvo nieko registruota rinkimo metu, arba tai gali būti tiesiog neįvestas nulis! Visi trys atvejai yra skirtingai sprendžiami, todėl svarbu užtikrinti, jog visos duomenų rinkinio celės yra užpildytos.</p>
+</div>
+<div id="vienas-duomuo---vienas-laukelis" class="section level2">
+<h2>4. Vienas duomuo - vienas laukelis</h2>
+<p>Iš principo duomenų rinkinyje viena eilutė turėtų būti vienas tiriamasis. Jeigu tiriamasis yra respondetas, tai turėtų būti vieno respondento atsakymai, o jeigu tiriamasis yra implantas, tuomet vienam implantui turėtų būti skiriama viena eilutė. Tai yra ypač aktualu, kai vienam pacientui yra įstatomi keli dantų implantai, o vertinamas yra implantas.</p>
+<p>Dažnai apklausose galima renktis kelis atsakymus į klausimą arba pacientas turi kelias gretutines ligas. Vienas būdas yra kiekvienai gretutinei ligai skirti atskirą stulpelį ir nurodyti, ar pacientas ją turėjo (Taip/Ne, 1/0). Respondentų atvejų tai irgi įmanoma, bet gali smarkiai išpūsti stulpelių skaičių. Geriausia yra atskirti atsakymo variantus kokiu nors būdu (kableliu, kabletaškiu), jog po to būtų įmanoma programiškai juos išdalinti pagal skiriamąjį ženklą.</p>
+</div>
+<div id="laikytis-lentelės-struktūros" class="section level2">
+<h2>5. Laikytis lentelės struktūros</h2>
+<p>Esu matęs atvejų, kai duomenys jau yra agreguoti. Su tokiais duomenimis teoriškai galima atlikti analizę, tačiau ji bus apribota ir įprastai užtruks ilgiau negu dirbant su standartine lentele. Tikslumo dėlei, štai ką turiu omenyje (<a href="https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989">šaltinis</a>):</p>
+<p><img src="/blog/blog-post-1_files/utas_a_1375989_f0004_b.jpeg" /></p>
+</div>
+<div id="mano-atvejis-kitoks" class="section level2">
+<h2>Mano atvejis kitoks!</h2>
+<p>Jeigu kyla problemų vedant duomenis, visada geriausia pasitarti su žmogumi, kuris atlieka duomenų analizes ir gali patarti duomenų įvesties klausimais. Taip pat rekomenduoju perskaityti šiuos straipsnius:</p>
+<ul>
+<li><a href="https://www.tandfonline.com/doi/full/10.1080/00031305.2017.1375989">Data Organization in Spreadsheets</a></li>
+<li><a href="https://datacarpentry.org/spreadsheet-ecology-lesson/02-common-mistakes/">Data Carpentry puslapis apie excelius</a></li>
+</ul>
+</div>

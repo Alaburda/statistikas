@@ -34,11 +34,12 @@ item:
     cta_label: Skaityti
     cta_url: '/2021/02/07/kaip-atlikti-isgyvenamumo-analize/'
   - title: Kaip teisingai saugoti duomenis?
+    align: center
     content: 'Teisingai saugomi duomenis palengvina analizę!'
     overlay_color: '#333'
     overlay_img: excel-icons-2.jpg
     overlay_filter: 0.6
     cta_label: Skaityti
-    cta_url: 'https://alaburda.github.io/statistika'
+    cta_url: '/2021/03/12/kaip-teisingai-saugoti-duomenis/'
 
 ---
