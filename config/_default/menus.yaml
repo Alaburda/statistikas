@@ -13,6 +13,22 @@ main:
   - name: Paslaugos
     url: '#skills'
     weight: 21
+  - name: Kursai
+    url: '/courses'
+    weight: 22
+    identifier: courses
+  - name: Įžanga į R
+    url: '/courses/izanga-R/'
+    weight: 10
+    parent: courses
+  - name: Duomenų mokslas su R
+    url: '/courses/duomenu-mokslas-R/'
+    weight: 10
+    parent: courses
+  - name: Statistika su R
+    url: '/courses/statistika-R/'
+    weight: 10
+    parent: courses
   - name: Blogas
     url: '#posts'
     weight: 30

@@ -1,5 +1,7 @@
 github.com/alaburda/wowchemy-widget-cta v0.0.0-20210306160159-5d1f32ad7225 h1:ZF9y7hji9f5CjuiwxZCTsSg/yX2dYiVnatG+FlHM+vQ=
 github.com/alaburda/wowchemy-widget-cta v0.0.0-20210306160159-5d1f32ad7225/go.mod h1:bwgX6DAdFPZKG+eHEgaTQE32oMCyqxdDnN/1cXx9Lac=
+github.com/msfjarvis/hugo-social-metadata v1.0.0 h1:mfLnus8iznPGiyFkJC93eCWr1PrdiNyv2BSONX1ZQVg=
+github.com/msfjarvis/hugo-social-metadata v1.0.0/go.mod h1:VfkrQTa9Gvdja58swLlBZz2/7ZEoj5nk9xt0pJAhfVo=
 github.com/wowchemy/wowchemy-hugo-modules/wowchemy v0.0.0-20210226164504-3952bfc85cee h1:fzgNvnmzCL2gjkMPme48DVakKsRw/iWKJIRgXyYI/bg=
 github.com/wowchemy/wowchemy-hugo-modules/wowchemy v0.0.0-20210226164504-3952bfc85cee/go.mod h1:H22qfH9qj3FWwsk7+bAZpmT24yRGNQURah2/IRwjbn8=
 github.com/wowchemy/wowchemy-hugo-modules/wowchemy-cms v0.0.0-20210226164504-3952bfc85cee h1:NMXbMGtvC1+JMYFceNLhin1Or002v0/aGfQ/WlUhD1o=
