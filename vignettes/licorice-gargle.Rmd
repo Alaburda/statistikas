@@ -1,0 +1,97 @@
+---
+title: "licorice-gargle"
+output: rmarkdown::html_vignette
+vignette: >
+  %\VignetteIndexEntry{licorice-gargle}
+  %\VignetteEngine{knitr::rmarkdown}
+  %\VignetteEncoding{UTF-8}
+---
+
+```{r, include = FALSE}
+knitr::opts_chunk$set(
+  collapse = TRUE,
+  comment = "#>"
+)
+```
+
+```{r setup}
+
+library(statistikas)
+library(dplyr)
+library(gtsummary)
+library(forcats)
+library(ggplot2)
+library(GGally)
+
+licorice_gargle <- medicaldata::licorice_gargle
+
+licorice_gargle <- licorice_gargle %>% 
+  mutate(treat = factor(treat, labels = c("Gliukozės tirpalas","Saldymedžio tirpalas")),
+         preOp_gender = factor(preOp_gender, labels = c("Vyrai", "Moterys")),
+         preOp_asa = factor(preOp_asa, labels = c("I", "II", "III")),
+         intraOp_surgerySize = factor(intraOp_surgerySize, labels = c("Maža", "Vidutinė", "Didelė")),
+         preOp_smoking = factor(preOp_smoking, labels = c("Rūko", "Neberūko", "Nerūko"))
+         ) %>% 
+  mutate(pacu30min_throatPain_cat = pacu30min_throatPain == 0,
+         pacu90min_throatPain_cat = pacu90min_throatPain == 0,
+         postOp4hour_throatPain_cat = postOp4hour_throatPain == 0
+         )
+  
+
+```
+
+# Duomenų žodynas
+
+```{r}
+
+licorice_labels <- list(treat = "Intervencija",
+                        preOp_age ~ "Amžius",
+                        preOp_gender ~ "Lytis",
+                        preOp_calcBMI ~ "KMI",
+                        preOp_smoking ~ "Rūkymas",
+                        preOp_pain ~ "Skausmas",
+                        preOp_asa ~ "ASA klasė",
+                        preOp_mallampati ~ "Mallampati klasė",
+                        intraOp_surgerySize ~ "Operacijos apimtis",
+                        pacu30min_throatPain_cat = "Gerklės skausmas 30 min. po operacijos",
+                        pacu90min_throatPain_cat = "Gerklės skausmas pusantros valandos po operacijos")
+
+# Kaip pridėti labels efektyviai?
+
+```
+
+
+# Aprašomoji statistika
+
+```{r}
+
+licorice_gargle %>% 
+  select(treat,preOp_age,preOp_gender, preOp_calcBMI, preOp_smoking,preOp_pain,preOp_asa,preOp_mallampati,intraOp_surgerySize) %>% 
+  tbl_summary(by = treat,
+              label = licorice_labels) %>% 
+  modify_header(label ~ "**Kintamasis**") %>%
+  modify_footnote(
+    all_stat_cols() ~ "Aprašomoji statistika pateikta kaip procentinė dalis pacientų arba vidurkis bei standartinis nuokrypis."
+  )
+
+
+```
+
+# Gerklės skausmas 30 min. po ekstubacijos
+
+```{r}
+
+plot_proportions(licorice_gargle, x = pacu30min_throatPain_cat, fill = treat, labels = licorice_labels)
+
+```
+
+# Gerklės skausmas pusantros valandos po ekstubacijos
+
+```{r}
+
+plot_proportions(licorice_gargle, x = pacu90min_throatPain_cat, fill = treat, labels = licorice_labels)
+
+```
+
+
+

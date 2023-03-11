@@ -13,10 +13,12 @@
 #' @export
 #'
 #' @examples
+#' @importFrom ggplot2 ggplot aes theme position_dodge2 geom_text geom_bar labs theme_classic
+
 
 plot_counts <- function(data,
                         x,
-                        by,
+                        fill,
                         xlab = "",
                         ylab = "",
                         bylab = "",
