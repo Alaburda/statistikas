@@ -1,0 +1,104 @@
+---
+title: "Untitled"
+output: html_document
+date: "2023-01-22"
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+
+source("../R/table_chisq.R")
+source("../R/plot_counts.R")
+source("../R/flextable_theme_statistikas.R")
+
+
+library(dplyr)
+library(flextable)
+library(ggplot2)
+
+flextable_theme_statistikas()
+
+flextable::set_flextable_defaults(
+    border.color = "black",
+    theme_fun = flextable::theme_box,
+    font.family = "Times New Roman",
+    decimal.mark = ","
+  )
+
+
+test_data <- data.frame(var1 = c(rep("A",5),rep("B",5)),
+           var2 = c(rep("A",5),rep("B",5)),
+           var3 = c(rep("A",7),rep("B",3)),
+           var4 = c(rep("A",1),rep("B",9)))
+
+plot_proportions <- function(data, x, by) {
+  out <- data %>% 
+    mutate({{ x }} := as.factor({{ x }})) %>% 
+    count({{ x }}, {{ by }}) %>% 
+    ggplot(aes(x = {{ x }}, fill = {{ by }}, weight = n, by = {{ x }})) +
+    geom_bar(position = "fill") +
+    geom_text(stat = "prop", position = position_fill(.5), aes(family = "serif")) + 
+    ggplot2::theme_classic() +
+    theme(text = element_text(family="serif"),
+          axis.text = element_text(size = 12),
+          axis.title = element_text(size = 12),
+          legend.text = element_text(size = 12),
+          legend.title = element_text(size = 12))
+  
+  return(out)
+
+  
+}
+
+plot_proportions(test_data, var2, var4)
+
+test_data %>% 
+  mutate(var2 = as.factor(var2)) %>% 
+  count(var2,var4) %>% 
+  ggplot(aes(x = var2, 
+             fill = var4,
+             weight = n,
+             by = var2)) + 
+  geom_bar(position = "fill") +
+  geom_text(stat = "prop", position = position_fill(.5), aes(family = "serif")) + 
+  ggplot2::theme_classic() +
+    theme(text = element_text(family="serif"),
+          axis.text = element_text(size = 12),
+          axis.title = element_text(size = 12),
+          legend.text = element_text(size = 12),
+          legend.title = element_text(size = 12))
+
+
+  
+  
+library(GGally)
+
+  ggplot(d) +
+  aes(x = Class, fill = Survived, weight = Freq, by = Class) +
+  geom_bar(position = "fill") +
+  geom_text(stat = "prop", position = position_fill(.5))
+
+```
+
+
+# Chi-kvadrato testas
+
+Kaip atrodo tekstinė forma?
+Kaip atrodo lentelė?
+Kaip atrodo grafikas?
+
+```{r}
+
+plot_counts(test_data, x = var1, by = var3)
+
+```
+
+
+```{r}
+
+table_chisq(test_data, "var1", c("var2","var3","var4")) %>% 
+  flextable::flextable() %>% 
+  flextable::width(width = 1.5) 
+
+```
+
